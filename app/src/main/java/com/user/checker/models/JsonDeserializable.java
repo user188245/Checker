@@ -5,5 +5,5 @@ import org.json.JSONObject;
 
 
 public interface JsonDeserializable {
-    public JSONObject jsonDeserialize(String json) throws JSONException;
+    JSONObject jsonDeserialize(String json) throws JSONException;
 }

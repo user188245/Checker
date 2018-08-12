@@ -7,12 +7,10 @@ import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.user.checker.import_package.Board;
 import com.user.checker.import_package.Index;
@@ -59,7 +57,6 @@ public class CheckerBoard extends FrameLayout implements View.OnClickListener{
 
     private void initSize(){
         if(this.getLayoutParams() != null) {
-
             ViewGroup.LayoutParams params = getLayoutParams();
             TOTAL_LENGTH = Math.min(params.width, params.height);
             REC_LENGTH = TOTAL_LENGTH / 8;

@@ -4,17 +4,10 @@ package com.user.checker.import_package;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
-
 import com.user.checker.CheckerBoard;
 import com.user.checker.CheckerWidget;
 import com.user.checker.MultiGameActivity;
@@ -68,11 +61,11 @@ public class Board {
         viewFamily = activity;
         if(activity instanceof SingleGameActivity) {
             isMulti = false;
-            viewFamily = (SingleGameActivity)activity;
+            viewFamily = activity;
         }
         else if(activity instanceof MultiGameActivity) {
             isMulti = true;
-            viewFamily = (MultiGameActivity)activity;
+            viewFamily = activity;
         }else{
             throw new RuntimeException("Unknown game type");
         }
@@ -85,21 +78,8 @@ public class Board {
         notifyView();
     }
 
-
-
-
     public Sprite[][] getBoard(){
         return board;
-    }
-
-
-
-    public int getTurnCount() {
-        return turnCount;
-    }
-
-    public int getCapacity() {
-        return capacity;
     }
 
     public Player getTurn() {
@@ -109,12 +89,6 @@ public class Board {
     public ArrayList<MoveSequenceValue> getMoveSequence() {
         return moveSequence;
     }
-
-    public int getNowSequence() {
-        return nowSequence;
-    }
-
-
 
     public class MovableList{
         private boolean isCatchable;
@@ -232,7 +206,7 @@ public class Board {
         boolean isUpgraded = false;
         if(movablelist.getMovableList(i1, j1).isEmpty()){
             if(catchable)
-                setStatusText("통상적인 이동 불가, 반드시 다른 말을 잡아야 됨.");
+                setStatusText("You must catch enemy's stone before move");
             return;
         }
         if(!movablelist.getMovableList(i1, j1).contains(new Index(i2,j2)))
@@ -259,7 +233,7 @@ public class Board {
             if(!movablelist.isCatchable){
                 turnChangeMode = true;
             }else{
-                setStatusText("한번 더 잡을 수 있습니다.");
+                setStatusText("You can catch enemies one more time");
             }
         }
         else{
@@ -281,7 +255,7 @@ public class Board {
         movablelist = new MovableList(turn);
         refreshMovableSprite();
         if(leftMovableSprite == 0){
-            setStatusText(turn.getEnemy() + "의 승리로 게임끝!");
+            setStatusText(turn.getEnemy() + "won!, Game is over");
             this.onGame = false;
         }
     }
@@ -332,7 +306,7 @@ public class Board {
 
     public void notifyView(){
         if(onGame)
-            setStatusText(turn.name() + "의 턴입니다.");
+            setStatusText(turn.name() + " Turn");
         if(isMulti){
             MultiGameActivity multiGameActivity = (MultiGameActivity)viewFamily;
             multiGameActivity.imageView_multi_turn.setImageResource(CheckerWidget.getImage(turn));

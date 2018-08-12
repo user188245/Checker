@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.user.checker.CheckerBoard;
 import com.user.checker.CheckerWidget;
 import com.user.checker.import_package.Board.Direction;
 import com.user.checker.import_package.Board.Player;
@@ -124,7 +125,7 @@ public class Sprite implements Cloneable{
         this.index = new Index(i,j);
         if(!this.type.equals(Type.Void)) {
             this.widget = new CheckerWidget(context, null, this);
-            this.board.attachedLayout.addView(this.widget,new ViewGroup.LayoutParams(board.attachedLayout.REC_LENGTH,board.attachedLayout.REC_LENGTH));
+            this.board.attachedLayout.addView(this.widget,new ViewGroup.LayoutParams(CheckerBoard.REC_LENGTH,CheckerBoard.REC_LENGTH));
             this.widget.notifyInitIndex();
         }
     }

@@ -1,14 +1,11 @@
 package com.user.checker;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,8 +15,8 @@ import android.widget.Toast;
 import com.user.checker.import_package.Board;
 import com.user.checker.import_package.MoveSequenceValue;
 
+import java.io.EOFException;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -79,7 +76,7 @@ public class SingleGameActivity extends AppCompatActivity implements View.OnClic
             objectOutputStream.writeObject(board0.board.getMoveSequence());
             objectOutputStream.close();
             fileOutputStream.close();
-            Toast.makeText(getApplicationContext(), "세이브 완료", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
         }  catch (IOException e) {
             e.printStackTrace();
         }
@@ -90,25 +87,25 @@ public class SingleGameActivity extends AppCompatActivity implements View.OnClic
         try {
             FileInputStream fileInputStream = new FileInputStream(getFilesDir() + "checkers.chk");
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            ArrayList<MoveSequenceValue> moveSequence = (ArrayList<MoveSequenceValue>)objectInputStream.readObject();
+            ArrayList<MoveSequenceValue> moveSequence = (ArrayList<MoveSequenceValue>) objectInputStream.readObject();
             objectInputStream.close();
             fileInputStream.close();
-            if(moveSequence == null || moveSequence.size() == 0)
+            if (moveSequence == null || moveSequence.size() == 0)
                 return;
             linearLayout_board.removeView(board0);
-            board0 = new CheckerBoard(getApplicationContext(),null);
-            linearLayout_board.addView(board0,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            Board board = new Board(board0.getContext(),board0,moveSequence,this);
+            board0 = new CheckerBoard(getApplicationContext(), null);
+            linearLayout_board.addView(board0, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            Board board = new Board(board0.getContext(), board0, moveSequence, this);
             imageButton_undo.setOnClickListener(board0);
             imageButton_redo.setOnClickListener(board0);
-            for(int i=0;i<moveSequence.size();i++)
+            for (int i = 0; i < moveSequence.size(); i++)
                 board.redo();
             System.gc();
-            Toast.makeText(getApplicationContext(), "로드 완료", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Loaded", Toast.LENGTH_SHORT).show();
+        } catch (EOFException e) {
+            Toast.makeText(getApplicationContext(), "No file exists!", Toast.LENGTH_SHORT).show();
+        } catch (ClassNotFoundException | IOException e) {
+            Toast.makeText(getApplicationContext(), "Couldn't load the files", Toast.LENGTH_SHORT).show();
         }
     }
 

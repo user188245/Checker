@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     TextView textView_single,textView_multi;
@@ -22,7 +20,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void init() {
         textView_single = (TextView) findViewById(R.id.textView_single);
         textView_multi = (TextView) findViewById(R.id.textView_multi);
-
     }
 
     @Override
@@ -39,4 +36,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
+
 }

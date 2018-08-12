@@ -1,12 +1,10 @@
 package com.user.checker;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Scanner;
@@ -15,10 +13,8 @@ import java.util.concurrent.ExecutionException;
 import org.json.*;
 
 public class HttpManager extends AsyncTask<String,Void,String>{
-    public final static String webServer = "http://118.36.72.159/Myphp/";
-    public final static String privateKey = "e509186dab3609982e91afec24e94dea";
 
-    private static String result(InputStream is){
+    private String result(InputStream is){
         String data = "";
         Scanner s = new Scanner(is);
         while(s.hasNext()) data += s.nextLine();
@@ -34,6 +30,7 @@ public class HttpManager extends AsyncTask<String,Void,String>{
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
+            httpURLConnection.setConnectTimeout(3000);
             OutputStream outputStream = httpURLConnection.getOutputStream();
             JSONObject jsonObject = new JSONObject();
             for(int i=1; i<params.length; i+=2)
@@ -55,9 +52,12 @@ public class HttpManager extends AsyncTask<String,Void,String>{
         return "error";
     }
 
+
+
     public static String post(String... params){
         try {
-            return (new HttpManager()).execute(params).get();
+            HttpManager httpManager = new HttpManager();
+            return httpManager.execute(params).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
             return "{}";

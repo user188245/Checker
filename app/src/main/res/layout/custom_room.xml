@@ -17,7 +17,9 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
 
         <TextView
             android:text="0"
@@ -29,7 +31,9 @@
             android:background="#b4d396"
             android:textSize="20dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
 
 
     </LinearLayout>

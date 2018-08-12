@@ -13,7 +13,6 @@ public class MoveSequenceValue implements Serializable {
 
 
     public MoveSequenceValue(Index beforeMove, Index afterMove, Board.Player player, boolean enemyRemoved, boolean isUpgraded, Sprite.Type enemyType) {
-
         this.beforeMove = beforeMove;
         this.afterMove = afterMove;
         this.player = player;

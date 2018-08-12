@@ -60,7 +60,8 @@
                     android:textSize="30dp"
                     android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp" />
 
                 <ImageView
                     android:id="@+id/imageView_multi_turn"
@@ -82,7 +83,8 @@
             android:layout_weight="1"
             android:text=""
             android:textColor="#025203"
-            android:textSize="15dp" />
+            android:textSize="15dp"
+            android:layout_marginStart="20dp" />
 
         <LinearLayout
             android:id="@+id/linearLayout_multi_board"
@@ -177,7 +179,6 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/linearLayout_multi_super_chattingArea"
             android:layout_weight="8"
             android:layout_width="match_parent"
             android:layout_height="0dp">
@@ -199,7 +200,7 @@
                         android:enabled="false"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
-                        android:gravity="top|left"
+                        android:gravity="top|start"
                         android:inputType="textMultiLine"
                         android:maxWidth="5.0dip"
                         android:minWidth="10.0dip"

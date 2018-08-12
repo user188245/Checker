@@ -6,11 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import com.user.checker.models.Room;
-
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 public class RoomAdaptor extends BaseAdapter {
     private Context context;

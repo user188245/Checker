@@ -1,11 +1,10 @@
 package com.user.checker;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Handler;
-import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.user.checker.import_package.Board;
-import com.user.checker.models.BaseModel;
 import com.user.checker.models.CommModel;
-
-import org.json.JSONException;
-import org.w3c.dom.Text;
-
-import java.util.concurrent.ExecutionException;
 
 public class MultiGameActivity extends AppCompatActivity implements View.OnClickListener{
     public ImageView imageView_multi_enemyStone,imageView_multi_myStone,imageView_multi_turn;
@@ -34,7 +25,8 @@ public class MultiGameActivity extends AppCompatActivity implements View.OnClick
     public Button button_multi_chattingInput;
     public LinearLayout linearLayout_multi_board,linearLayout_multi_chattingBoard;
 
-    private Intent intent;
+    private String ip;
+    private int port;
 
     public boolean isHost;
     String s_id;
@@ -54,7 +46,7 @@ public class MultiGameActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void initNetwork() {
-        networkManager = new NetworkManager(this,isHost,handler);
+        networkManager = new NetworkManager(this,ip,port,isHost,handler);
         networkManager.start();
     }
 
@@ -75,8 +67,8 @@ public class MultiGameActivity extends AppCompatActivity implements View.OnClick
         button_multi_chattingInput = (Button) findViewById(R.id.button_multi_chattingInput);
         linearLayout_multi_board = (LinearLayout) findViewById(R.id.linearLayout_multi_board);
         linearLayout_multi_chattingBoard = (LinearLayout) findViewById(R.id.linearLayout_multi_chattingBoard);
-
-
+        ip = getString(R.string.server_ip);
+        port = getResources().getInteger(R.integer.server_port);
     }
 
     @Override
@@ -126,17 +118,17 @@ public class MultiGameActivity extends AppCompatActivity implements View.OnClick
                 checkerBoard = new CheckerBoard(this,null);
                 linearLayout_multi_board.addView(checkerBoard,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
 
-                intent = getIntent();
+                Intent intent = getIntent();
                 s_id = intent.getStringExtra("s_id");
                 s_id2 = "";
                 isHost=intent.getBooleanExtra("isHost",false);
                 if(isHost)
-                    Toast.makeText(getApplicationContext(),"당신의 s_id :" + s_id + ", 호스트로 입장.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Your s_id :" + s_id + ", plays as a host.",Toast.LENGTH_SHORT).show();
                 else{
                     s_id2 = intent.getStringExtra("s_id2");
-                    Toast.makeText(getApplicationContext(),"당신의 s_id :" + s_id + ", 게스트로 입장.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Your s_id :" + s_id + ", plays as a guest",Toast.LENGTH_SHORT).show();
                 }
-                textView_multi_myName.setText("player : 플레이어");
+                textView_multi_myName.setText("player");
                 textView_multi_mySid.setText("s_id : " + s_id);
                 initNetwork();
             }

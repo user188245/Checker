@@ -21,22 +21,22 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class NetworkManager extends Thread {
 
-    Board board;
-    Socket socket;
+    private Board board;
+    private Socket socket;
     public Queue<CommModel> msgQueue;
-    int flag;
+    private int flag;
     public String s_id;
     public String s_id2 = "";
 
     String playerName = "";
 
-    String disconnectMsg = "(연결해제)";
+    private String disconnectMsg = "(Disconnect)";
 
-    SendPacket sendPacket;
-    ReceivePacket receivePacket;
+    private SendPacket sendPacket;
+    private ReceivePacket receivePacket;
 
-    PrintStream printStream;
-    InputStream inputStream;
+    private PrintStream printStream;
+    private InputStream inputStream;
 
     private int connection_fail_count = 0;
 
@@ -47,15 +47,17 @@ public class NetworkManager extends Thread {
         Terminated
     }
 
-    public State state;
-    public final static String SERVER_IP = "118.36.72.159";
-    public final static int SERVER_FORT = 8100;
-    MultiGameActivity multiGameActivity;
-    boolean isHost;
-    Handler mainHandler;
+    State state;
+    private final String serverIp;
+    private final int serverPort;
+    private MultiGameActivity multiGameActivity;
+    private boolean isHost;
+    private Handler mainHandler;
 
 
-    public NetworkManager(MultiGameActivity multiGameActivity, boolean isHost, Handler mainHandler) {
+    public NetworkManager(MultiGameActivity multiGameActivity, String ip, int port, boolean isHost, Handler mainHandler) {
+        this.serverIp = ip;
+        this.serverPort = port;
         this.multiGameActivity = multiGameActivity;
         this.s_id = multiGameActivity.s_id;
         this.s_id2 = multiGameActivity.s_id2;
@@ -68,16 +70,16 @@ public class NetworkManager extends Thread {
     @Override
     public void run() {
         try {
-            socket = new Socket(SERVER_IP, SERVER_FORT);
-
-
+            socket = new Socket(serverIp, serverPort);
+            printStream = new PrintStream(socket.getOutputStream());
+            inputStream = socket.getInputStream();
             while (!this.state.equals(State.Terminated) || connection_fail_count > 8) {
                 if (state.equals(State.Waiting)) {
                     if(isHost) {
                         sendPacket = new SendPacket(s_id, "is_matched", null);
                         receivePacket = sendMsg(sendPacket);
                         if (receivePacket.state.equals("Ready"))
-                            statusNotify("플레이어를 기다리는 중입니다...");
+                            statusNotify("Waiting for opponent.");
                         else if (receivePacket.state.equals("OK")) {
                             flag = receivePacket.enemy.flag;
                             s_id2 = receivePacket.enemy.s_id;
@@ -88,10 +90,10 @@ public class NetworkManager extends Thread {
                         sendPacket = new SendPacket(s_id, "join",commModel);
                         receivePacket = sendMsg(sendPacket);
                         if(receivePacket.state.equals("")||receivePacket.state.equals("already started")) {
-                            disconnectMsg = "이미 시작되거나 유효하지 않은 방";
+                            disconnectMsg = "Already started or invalid room";
                             multiGameActivity.finish();
                         }else if(receivePacket.state.equals("OK")){
-                            statusNotify("호스트플레이어를 깨우는 중입니다.");
+                            statusNotify("trying to notify to host to start");
                             flag = (receivePacket.enemy.flag==1)?0:1;
                             s_id2 = receivePacket.enemy.s_id;
                             state = State.Ready;
@@ -116,7 +118,7 @@ public class NetworkManager extends Thread {
                     }
                 }else if (state.equals(State.Connected)) {
                     if(connection_fail_count > 4) {
-                        disconnectMsg = "상대방과의 연결이 끊겼습니다.";
+                        disconnectMsg = "Connection timeout from opponent";
                         multiGameActivity.finish();
                     }
                     else
@@ -135,12 +137,12 @@ public class NetworkManager extends Thread {
             multiGameActivity.finish();
         }catch(InterruptedException e1) {
             e1.printStackTrace();
-            final String cause = disconnectMsg==null?"(연결해제)":disconnectMsg;
+            final String cause = disconnectMsg==null?"(Disconnected)":disconnectMsg;
             try {
                 socket.close();
                 mainHandler.post(new Runnable() {
                     public void run() {
-                        Toast.makeText(multiGameActivity.getApplicationContext(),"접속종료 : " + cause,Toast.LENGTH_SHORT).show();}
+                        Toast.makeText(multiGameActivity.getApplicationContext(),"Connection terminated : " + cause,Toast.LENGTH_SHORT).show();}
                 });
             } catch (IOException e) {}
         }catch(ConnectException e){
@@ -153,17 +155,15 @@ public class NetworkManager extends Thread {
     }
 
     private ReceivePacket sendMsg(SendPacket sendPacket) throws IOException, JSONException, InterruptedException {
-        printStream = new PrintStream(socket.getOutputStream());
         String send = sendPacket.jsonSerialize();
         String receive = "";
         printStream.print(send);
         printStream.flush();
-        for(int conn_count = 0; conn_count<100000; conn_count++){
-            inputStream = socket.getInputStream();
+        for(int conn_count = 0; conn_count<100000; conn_count++) {
             byte[] b = new byte[inputStream.available()];
             inputStream.read(b);
             receive = new String(b);
-            if(!receive.isEmpty()){
+            if (!receive.isEmpty()) {
                 return new ReceivePacket(receive);
             }
             Thread.sleep(300);
@@ -209,12 +209,12 @@ public class NetworkManager extends Thread {
 
             board = new Board(multiGameActivity.getApplicationContext(),multiGameActivity.checkerBoard,multiGameActivity);
             board.multi_player = player;
-            playerName = player.name() + " 플레이어";
+            playerName = player.name() + " player";
             multiGameActivity.imageView_multi_myStone.setImageResource(CheckerWidget.getImage(player));
             multiGameActivity.imageView_multi_enemyStone.setImageResource(CheckerWidget.getImage(player.getEnemy()));
             multiGameActivity.imageView_multi_turn.setImageResource(CheckerWidget.getImage(board.getTurn()));
-            multiGameActivity.textView_multi_myName.setText("player : " + player.name() + " 플레이어");
-            multiGameActivity.textView_multi_enemyName.setText("player : " + player.getEnemy().name() + " 플레이어");
+            multiGameActivity.textView_multi_myName.setText("player : " + player.name() + " player");
+            multiGameActivity.textView_multi_enemyName.setText("player : " + player.getEnemy().name() + " player");
             multiGameActivity.textView_multi_enemySid.setText("s_id : " + s_id2);
         }
     }
@@ -244,11 +244,11 @@ public class NetworkManager extends Thread {
             if(commModel.move!=0){
                 int move = commModel.move;
                 int i1 = move % 8;
-                move = (int)(move / 8);
+                move = move / 8;
                 int j1 = move % 8;
-                move = (int)(move / 8);
+                move = move / 8;
                 int i2 = move % 8;
-                move = (int)(move / 8);
+                move = move / 8;
                 int j2 = move % 8;
                 board.move(i1,j1,i2,j2);
             }

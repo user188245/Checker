@@ -16,21 +16,18 @@ import com.user.checker.models.BaseModel;
 import com.user.checker.models.Room;
 import com.user.checker.models.RoomModel;
 
-import org.json.JSONException;
-
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 public class Lobby extends AppCompatActivity implements View.OnClickListener,MenuItem.OnMenuItemClickListener,ListView.OnItemClickListener{
     ListView listView;
     RoomAdaptor roomAdaptor;
     ArrayList<Room> roomList;
     Room selectedRoom = null;
-    String s_id;
+    static String s_id;
 
     EditText editText_roomId,editText_roomName;
     Button button_lobby_join,button_lobby_exit;
-
 
 
     @Override
@@ -38,6 +35,12 @@ public class Lobby extends AppCompatActivity implements View.OnClickListener,Men
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
         init();
+        setPreSID();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         refreshRoom();
     }
 
@@ -46,23 +49,26 @@ public class Lobby extends AppCompatActivity implements View.OnClickListener,Men
         editText_roomName = (EditText) findViewById(R.id.editText_roomName);
         button_lobby_join = (Button) findViewById(R.id.button_lobby_join);
         button_lobby_exit = (Button) findViewById(R.id.button_lobby_exit);
-
         listView = (ListView) findViewById(R.id.listView);
         roomList = new ArrayList<>();
         roomAdaptor = new RoomAdaptor(getApplicationContext(),roomList);
         listView.setAdapter(roomAdaptor);
         listView.setOnItemClickListener(this);
-        DBManager db = new DBManager(getApplicationContext());
-        s_id = db.getSID();
+    }
 
-
-
+    public void setPreSID(){
+        DBManager db = new DBManager(this);
+        try {
+            Lobby.s_id = db.getSID();
+        }catch(IOException e){
+            Toast.makeText(getApplicationContext(), "err : REQUEST TIMEOUT: Network Failed!",Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem refresh_room = menu.add(0,0,0,"방 목록 초기화");
-        MenuItem create_room  = menu.add(0,1,0,"방 만들기");
+        MenuItem refresh_room = menu.add(0,0,0,"Refresh Room List");
+        MenuItem create_room  = menu.add(0,1,0,"Create Room");
         refresh_room.setOnMenuItemClickListener(this);
         create_room.setOnMenuItemClickListener(this);
         return true;
@@ -73,11 +79,13 @@ public class Lobby extends AppCompatActivity implements View.OnClickListener,Men
         Intent intent;
         switch(v.getId()){
             case R.id.button_lobby_join:
-                intent = new Intent(Lobby.this, MultiGameActivity.class);
-                intent.putExtra("s_id",s_id);
-                intent.putExtra("s_id2",selectedRoom.s_id);
-                intent.putExtra("isHost",false);
-                startActivity(intent);
+                if(selectedRoom != null) {
+                    intent = new Intent(Lobby.this, MultiGameActivity.class);
+                    intent.putExtra("s_id", s_id);
+                    intent.putExtra("s_id2", selectedRoom.s_id);
+                    intent.putExtra("isHost", false);
+                    startActivity(intent);
+                }
                 break;
             case R.id.button_lobby_exit:
                 finish();
@@ -94,7 +102,7 @@ public class Lobby extends AppCompatActivity implements View.OnClickListener,Men
                 break;
             case 1:
                 try{
-                    BaseModel baseModel = new BaseModel(HttpManager.post(HttpManager.webServer + "create.php","s_id",s_id));
+                    BaseModel baseModel = new BaseModel(HttpManager.post(getResources().getString(R.string.web) + "create.php","s_id",s_id));
                     if(baseModel.errorCode !=0)
                         Toast.makeText(getApplicationContext(),"err : " + baseModel.cause,Toast.LENGTH_SHORT).show();
                     else{
@@ -104,7 +112,7 @@ public class Lobby extends AppCompatActivity implements View.OnClickListener,Men
                         startActivity(intent);
                     }
                 }catch(Exception e){
-
+                    Toast.makeText(getApplicationContext(), "err : REQUEST TIMEOUT: Network Failed!",Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -115,12 +123,14 @@ public class Lobby extends AppCompatActivity implements View.OnClickListener,Men
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         selectedRoom = (Room) roomAdaptor.getItem(position);
         editText_roomId.setText(String.valueOf(selectedRoom.room_id));
-        editText_roomName.setText("Checker #" + selectedRoom.room_id);
+        editText_roomName.setText("");
+        editText_roomName.append("Checker #");
+        editText_roomName.append(String.valueOf(selectedRoom.room_id));
     }
 
     public void refreshRoom(){
         try{
-            RoomModel roomModel = new RoomModel(HttpManager.post(HttpManager.webServer + "list.php","s_id",s_id));
+            RoomModel roomModel = new RoomModel(HttpManager.post(getResources().getString(R.string.web) + "list.php","s_id",s_id));
             if(roomModel.errorCode != 0)
                 Toast.makeText(getApplicationContext(),"err : " + roomModel.cause,Toast.LENGTH_SHORT).show();
             else{
@@ -129,8 +139,11 @@ public class Lobby extends AppCompatActivity implements View.OnClickListener,Men
                 Toast.makeText(getApplicationContext(),"refresh completed, The number of room : " + roomAdaptor.getCount(),Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "err : REQUEST TIMEOUT: Network Failed!",Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
+
+
 
 }

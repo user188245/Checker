@@ -48,7 +48,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp" />
             <ImageButton
                 android:id="@+id/imageButton_undo"
                 android:layout_marginLeft="10dp"
@@ -56,7 +58,9 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:alpha="30"
-                android:src="@drawable/undo"/>
+                android:src="@drawable/undo"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp" />
         </LinearLayout>
         <LinearLayout
             android:layout_weight="2"
@@ -68,7 +72,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp" />
             <ImageButton
                 android:id="@+id/imageButton_redo"
                 android:layout_marginLeft="10dp"
@@ -76,7 +82,9 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:alpha="30"
-                android:src="@drawable/redo"/>
+                android:src="@drawable/redo"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp" />
         </LinearLayout>
         <LinearLayout
             android:layout_weight="5"
@@ -87,7 +95,8 @@
                 android:textSize="30dp"
                 android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp" />
 
             <ImageView
                 android:id="@+id/imageView_turn"
@@ -107,7 +116,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginLeft="20dp"
-        android:text=""/>
+        android:text=""
+        android:layout_marginStart="20dp" />
 
     <LinearLayout
         android:layout_weight="16"
@@ -122,27 +132,27 @@
         android:layout_weight="2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="right"
+        android:gravity="end"
         android:orientation="horizontal">
         <Button
             android:id="@+id/button_save"
             android:text="SAVE"
             android:onClick="onClick"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/button_load"
             android:text="LOAD"
             android:onClick="onClick"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/button_exit"
             android:text="EXIT"
             android:onClick="onClick"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
