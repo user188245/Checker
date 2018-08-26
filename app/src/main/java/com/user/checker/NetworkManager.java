@@ -38,6 +38,13 @@ public class NetworkManager extends Thread {
     private PrintStream printStream;
     private InputStream inputStream;
 
+    private static long LATENCY = 1000;
+
+    private static long TIMEOUT_COUNT = 4;
+
+    private static long SELF_TIMEOUT_LIMIT = 8;
+    private static long SELF_TIMEOUT_WAIT = 60000;
+
     private int connection_fail_count = 0;
 
     public enum State {
@@ -73,7 +80,7 @@ public class NetworkManager extends Thread {
             socket = new Socket(serverIp, serverPort);
             printStream = new PrintStream(socket.getOutputStream());
             inputStream = socket.getInputStream();
-            while (!this.state.equals(State.Terminated) || connection_fail_count > 8) {
+            while (!this.state.equals(State.Terminated) || connection_fail_count > NetworkManager.SELF_TIMEOUT_LIMIT) {
                 if (state.equals(State.Waiting)) {
                     if(isHost) {
                         sendPacket = new SendPacket(s_id, "is_matched", null);
@@ -117,7 +124,7 @@ public class NetworkManager extends Thread {
                         }
                     }
                 }else if (state.equals(State.Connected)) {
-                    if(connection_fail_count > 4) {
+                    if(connection_fail_count > NetworkManager.TIMEOUT_COUNT) {
                         disconnectMsg = "Connection timeout from opponent";
                         multiGameActivity.finish();
                     }
@@ -131,9 +138,9 @@ public class NetworkManager extends Thread {
                             }
 
                 }
-                Thread.sleep(300);
+                Thread.sleep(NetworkManager.LATENCY);
             }
-            Thread.sleep(60000);
+            Thread.sleep(NetworkManager.SELF_TIMEOUT_WAIT);
             multiGameActivity.finish();
         }catch(InterruptedException e1) {
             e1.printStackTrace();
@@ -166,7 +173,7 @@ public class NetworkManager extends Thread {
             if (!receive.isEmpty()) {
                 return new ReceivePacket(receive);
             }
-            Thread.sleep(300);
+            Thread.sleep(NetworkManager.LATENCY);
         }
         throw new IOException();
     }

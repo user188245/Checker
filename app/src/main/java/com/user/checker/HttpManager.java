@@ -17,7 +17,8 @@ public class HttpManager extends AsyncTask<String,Void,String>{
     private String result(InputStream is){
         String data = "";
         Scanner s = new Scanner(is);
-        while(s.hasNext()) data += s.nextLine();
+        while(s.hasNext())
+            data += s.nextLine();
         s.close();
         return data;
     }

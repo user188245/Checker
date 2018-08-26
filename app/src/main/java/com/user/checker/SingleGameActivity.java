@@ -2,6 +2,7 @@ package com.user.checker;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.user.checker.import_package.MoveSequenceValue;
 
 import java.io.EOFException;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -100,9 +102,8 @@ public class SingleGameActivity extends AppCompatActivity implements View.OnClic
             imageButton_redo.setOnClickListener(board0);
             for (int i = 0; i < moveSequence.size(); i++)
                 board.redo();
-            System.gc();
             Toast.makeText(getApplicationContext(), "Loaded", Toast.LENGTH_SHORT).show();
-        } catch (EOFException e) {
+        } catch (FileNotFoundException e) {
             Toast.makeText(getApplicationContext(), "No file exists!", Toast.LENGTH_SHORT).show();
         } catch (ClassNotFoundException | IOException e) {
             Toast.makeText(getApplicationContext(), "Couldn't load the files", Toast.LENGTH_SHORT).show();
