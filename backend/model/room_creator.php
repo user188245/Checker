@@ -1,6 +1,6 @@
 <?php
-    include 'core/db.php';
-    include 'model/base_model.php';
+    require 'core/db.php';
+    require 'model/base_model.php';
 
     class RoomCreator extends BaseModel{
 

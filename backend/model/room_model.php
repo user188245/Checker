@@ -1,6 +1,6 @@
 <?php
-    include 'core/db.php';
-    include 'model/base_model.php';
+    require 'core/db.php';
+    require 'model/base_model.php';
 
     class RoomModel extends BaseModel{
     	public $rooms = "[]";
@@ -15,8 +15,8 @@
     			$this->errorCode = 1000;
     			$this->cause = "DB Connection failed";
     		}else{
-    			$result = $this->db->getUser($s_id);
-    			if(mysqli_fetch_array($result) == null){
+    			$result = mysqli_fetch_array($this->db->getUser($s_id));
+    			if($result == null){
     				$this->errorCode = 620;
     				$this->cause = "Invalid s_id. Please reinstall this application.";
     			}

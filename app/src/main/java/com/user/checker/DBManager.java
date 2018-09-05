@@ -47,7 +47,7 @@ public class DBManager {
                     "privateKey",this.context.getResources().getString(R.string.pk));
             sidModel = new SidModel(json);
             if(sidModel.errorCode != 0)
-                Toast.makeText(context,"err : " + sidModel.cause,Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"err : " + sidModel.cause + " (code : " + sidModel.errorCode + ")" ,Toast.LENGTH_SHORT).show();
         }catch (JSONException e) {
             throw new IOException();
         }

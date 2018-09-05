@@ -11,8 +11,6 @@ public class CommModel implements JsonSerializable,JsonDeserializable{
     public String target;
     public String chat;
 
-
-
     public CommModel(int move, String target, String chat) {
         this.move = move;
         this.target = target;

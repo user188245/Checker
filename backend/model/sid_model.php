@@ -1,6 +1,6 @@
 <?php
-    include 'core/db.php';
-    include 'model/base_model.php';
+    require 'core/db.php';
+    require 'model/base_model.php';
 
     class SidModel extends BaseModel {
 
@@ -24,9 +24,9 @@
     				$this->cause = "DB Connection failed";
     			}else{
     				$this->s_id = $this->get_new_sid();
-    				if(!$this->db->createSID($s_id)){
-    					$this->s_id = $this->get_new_sid();
-    					$this->insert_sid($private_key);
+    				if(!$this->db->createSID($this->s_id)){
+                        $this->errorCode = 1080;
+        				$this->cause = "DB Connection failed";
     				}
     			}
     		}

@@ -61,7 +61,7 @@ public class Lobby extends AppCompatActivity implements View.OnClickListener,Men
         try {
             Lobby.s_id = db.getSID();
         }catch(IOException e){
-            Toast.makeText(getApplicationContext(), "err : REQUEST TIMEOUT: Network Failed!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "err : REQUEST TIMEOUT: Network Failed! (code : 0)",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -104,7 +104,7 @@ public class Lobby extends AppCompatActivity implements View.OnClickListener,Men
                 try{
                     BaseModel baseModel = new BaseModel(HttpManager.post(getResources().getString(R.string.web) + "create.php","s_id",s_id));
                     if(baseModel.errorCode !=0)
-                        Toast.makeText(getApplicationContext(),"err : " + baseModel.cause,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"err : " + baseModel.cause + " (code : " + baseModel.errorCode + ")", Toast.LENGTH_SHORT).show();
                     else{
                         Intent intent = new Intent(Lobby.this, MultiGameActivity.class);
                         intent.putExtra("s_id",s_id);
@@ -112,7 +112,7 @@ public class Lobby extends AppCompatActivity implements View.OnClickListener,Men
                         startActivity(intent);
                     }
                 }catch(Exception e){
-                    Toast.makeText(getApplicationContext(), "err : REQUEST TIMEOUT: Network Failed!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "err : REQUEST TIMEOUT: Network Failed! (code : 0)",Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -139,7 +139,7 @@ public class Lobby extends AppCompatActivity implements View.OnClickListener,Men
                 Toast.makeText(getApplicationContext(),"refresh completed, The number of room : " + roomAdaptor.getCount(),Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "err : REQUEST TIMEOUT: Network Failed!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "err : REQUEST TIMEOUT: Network Failed! (code : 0)",Toast.LENGTH_SHORT).show();
             finish();
         }
     }
