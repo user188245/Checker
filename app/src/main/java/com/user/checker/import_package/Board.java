@@ -220,7 +220,7 @@ public class Board {
             NetworkManager networkManager = ((MultiGameActivity)viewFamily).networkManager;
             putInQueue(networkManager.msgQueue,networkManager.s_id2,i1,i2,j1,j2);
         }
-        if(board[i2][j2].getType().equals(Type.Normal) && turn.equals(Player.White) && i2 == 0 || turn.equals(Player.Red) && i2 == 7){
+        if(board[i2][j2].getType().equals(Type.Normal) && (turn.equals(Player.White) && i2 == 0 || turn.equals(Player.Red) && i2 == 7)){
             board[i2][j2].upgrade();
             isUpgraded = true;
         }
